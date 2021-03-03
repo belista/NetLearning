@@ -1,0 +1,60 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            var users = new List<User>();
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                users.Add(new User
+                {
+                    Email = $"SomeMail{i}",
+                    Password = $"somePassword{i}",
+                    UserName = $"userName{i}",
+                    IsEmailConfirmed = true,
+                    Phone = 45212821 + i
+                });
+
+                Console.WriteLine($"Added {i}");
+            }
+
+            Parallel.ForEach(users, u => ChangeUser(u));
+
+            Console.ReadLine();
+        }
+
+        private static void ChangeUser(User user)
+        {
+            var rnd = new Random();
+
+            user.Email = user.Email + rnd.Next(1000);
+            user.Password = user.Password + rnd.Next(1000);
+
+            for (int i = 0; i < 1000; i++)
+            {
+                var value = rnd.Next(100000);
+            }
+
+            Console.WriteLine($"Changed {user.Id}");
+        }
+    }
+
+    public class User
+    {
+        public User()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
+        public string Id { get; set; }
+
+        public string UserName { get; set; }
+
+        public string Password { get; set; }
+
+        public string Email { get; set; }
+
+        public bool IsEmailConfirmed { get; set; }
+
+        public long Phone { get; set; }
+    }
