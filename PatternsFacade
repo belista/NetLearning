@@ -1,0 +1,79 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            var textEditor = new TextEditor();
+            var compiller = new Compiller();
+            var clr = new CLR();
+
+            var ide = new VisualStudioFacade(textEditor, compiller, clr);
+
+            var programmer = new Programmer();
+            programmer.CreateApplication(ide);
+
+            Console.Read();
+        }
+    }
+
+    public class TextEditor
+    {
+        public void CreateCode()
+        {
+            Console.WriteLine("Writing code");
+        }
+        public void Save()
+        {
+            Console.WriteLine("Saving the code");
+        }
+    }
+    public class Compiller
+    {
+        public void Compile()
+        {
+            Console.WriteLine("Compiling an application");
+        }
+    }
+    public class CLR
+    {
+        public void Execute()
+        {
+            Console.WriteLine("Running the application");
+        }
+        public void Finish()
+        {
+            Console.WriteLine("Shutting down the app");
+        }
+    }
+
+    public class VisualStudioFacade
+    {
+        TextEditor textEditor;
+        Compiller compiller;
+        CLR clr;
+        public VisualStudioFacade(TextEditor te, Compiller compil, CLR clr)
+        {
+            this.textEditor = te;
+            this.compiller = compil;
+            this.clr = clr;
+        }
+        public void Start()
+        {
+            textEditor.CreateCode();
+            textEditor.Save();
+            compiller.Compile();
+            clr.Execute();
+        }
+        public void Stop()
+        {
+            clr.Finish();
+        }
+    }
+
+    public class Programmer
+    {
+        public void CreateApplication(VisualStudioFacade facade)
+        {
+            facade.Start();
+            facade.Stop();
+        }
+    }
