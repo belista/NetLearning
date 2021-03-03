@@ -1,0 +1,85 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            var library = new Library();
+            var reader = new Reader();
+            reader.SeeBooks(library);
+
+            Console.Read();
+        }
+    }
+
+    public class Reader
+    {
+        public void SeeBooks(Library library)
+        {
+            IBookIterator iterator = library.CreateNumerator();
+            while (iterator.HasNext())
+            {
+                Book book = iterator.Next();
+                Console.WriteLine(book.Name);
+            }
+        }
+    }
+
+    public interface IBookIterator
+    {
+        bool HasNext();
+        Book Next();
+    }
+    public interface IBookNumerable
+    {
+        IBookIterator CreateNumerator();
+        int Count { get; }
+        Book this[int index] { get; }
+    }
+    public class Book
+    {
+        public string Name { get; set; }
+    }
+
+    public class Library : IBookNumerable
+    {
+        private Book[] books;
+        public Library()
+        {
+            books = new Book[]
+            {
+            new Book{Name="Some book 1"},
+            new Book {Name="Some book 2"},
+            new Book {Name="Some book 3"}
+            };
+        }
+        public int Count
+        {
+            get { return books.Length; }
+        }
+
+        public Book this[int index]
+        {
+            get { return books[index]; }
+        }
+        public IBookIterator CreateNumerator()
+        {
+            return new LibraryNumerator(this);
+        }
+    }
+    public class LibraryNumerator : IBookIterator
+    {
+        IBookNumerable aggregate;
+        int index = 0;
+        public LibraryNumerator(IBookNumerable a)
+        {
+            aggregate = a;
+        }
+        public bool HasNext()
+        {
+            return index < aggregate.Count;
+        }
+
+        public Book Next()
+        {
+            return aggregate[index++];
+        }
+    }
