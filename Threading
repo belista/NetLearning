@@ -1,0 +1,51 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            var locker = new object();
+
+            var data1 = new ThreadData { Data = "Content1", Number = 1, Locker = locker };
+            var data2 = new ThreadData { Data = "Content2", Number = 2, Locker = locker };
+            var data3 = new ThreadData { Data = "Content3", Number = 3, Locker = locker };
+
+            File.Create(Path.Combine(Directory.GetCurrentDirectory(), "Test.txt"));
+
+            var thread1 = new Thread(new ThreadStart(data1.WriteData));
+            var thread2 = new Thread(new ThreadStart(data2.WriteData));
+            var thread3 = new Thread(new ThreadStart(data3.WriteData));
+
+            thread1.Start();
+            thread2.Start();
+            thread3.Start();
+
+            Console.Read();
+        }
+    }
+    
+    public class ThreadData
+    {
+        public object Locker { get; set; }
+
+        public string Data { get; set; }
+        public int Number { get; set; }
+
+        public void WriteData()
+        {
+            bool acquiredLock = false;
+
+            try
+            {
+                Monitor.Enter(Locker, ref acquiredLock);
+
+                Console.WriteLine($"Stream under the number {Number} starts writing to a file");
+
+                File.AppendAllText("D:\\Testtt.txt", Data);
+
+                Console.WriteLine($"Stream under the number {Number} finishes writing to the file");
+            }
+            finally
+            {
+                if (acquiredLock) Monitor.Exit(Locker);
+            }
+        }
+    }
