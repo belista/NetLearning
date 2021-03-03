@@ -1,0 +1,66 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            //Covariant
+            IBank<DepositAccount> depositBank = new Bank<DepositAccount>();
+            Account acc1 = depositBank.CreateAccount(50);
+
+            IBank<Account> ordinaryBank = new Bank<DepositAccount>();
+            Account acc2 = ordinaryBank.CreateAccount(100);
+
+            //Contravariant
+            ITransaction<Account> accTransaction = new Transaction<Account>();
+            accTransaction.DoOperation(new Account(), 200);
+
+            ITransaction<DepositAccount> depAccTransaction = new Transaction<Account>();
+            depAccTransaction.DoOperation(new DepositAccount(), 300);
+
+            Console.Read();
+        }
+    }
+
+    public class Account
+    {
+        public virtual void DoTransfer(int sum)
+        {
+            Console.WriteLine($"Transfer {sum} dollars");
+        }
+    }
+    public class DepositAccount : Account
+    {
+        public override void DoTransfer(int sum)
+        {
+            Console.WriteLine($"Deposit transfer {sum} dollars");
+        }
+    }
+
+    //Covariant
+    public interface IBank<out T>
+    {
+        T CreateAccount(int sum);
+    }
+
+    public class Bank<T> : IBank<T> where T : Account, new()
+    {
+        public T CreateAccount(int sum)
+        {
+            T acc = new T();
+            acc.DoTransfer(sum);
+            return acc;
+        }
+    }
+
+    //Contravariant
+    interface ITransaction<in T>
+    {
+        void DoOperation(T account, int sum);
+    }
+
+    class Transaction<T> : ITransaction<T> where T : Account
+    {
+        public void DoOperation(T account, int sum)
+        {
+            account.DoTransfer(sum);
+        }
+    }
