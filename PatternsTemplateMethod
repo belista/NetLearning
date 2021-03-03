@@ -1,0 +1,72 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            var school = new School();
+            var university = new University();
+
+            school.Learn();
+            university.Learn();
+
+            Console.Read();
+        }
+    }
+    public abstract class Education
+    {
+        public void Learn()
+        {
+            Enter();
+            Study();
+            PassExams();
+            GetDocument();
+        }
+        public abstract void Enter();
+        public abstract void Study();
+        public virtual void PassExams()
+        {
+            Console.WriteLine("We pass final exams");
+        }
+        public abstract void GetDocument();
+    }
+
+    public class School : Education
+    {
+        public override void Enter()
+        {
+            Console.WriteLine("Let's go to first class");
+        }
+
+        public override void Study()
+        {
+            Console.WriteLine("We attend classes, do homework");
+        }
+
+        public override void GetDocument()
+        {
+            Console.WriteLine("We get a certificate of secondary education");
+        }
+    }
+
+    public class University : Education
+    {
+        public override void Enter()
+        {
+            Console.WriteLine("We pass the entrance exams and enter the university");
+        }
+
+        public override void Study()
+        {
+            Console.WriteLine("We attend lectures");
+            Console.WriteLine("We pass the practice");
+        }
+
+        public override void PassExams()
+        {
+            Console.WriteLine("We pass the exam in the specialty");
+        }
+
+        public override void GetDocument()
+        {
+            Console.WriteLine("We receive a diploma of higher education");
+        }
+    }
