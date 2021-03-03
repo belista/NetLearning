@@ -1,0 +1,29 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            ParameterExpression parameter = Expression.Parameter(typeof(int), "value");
+
+            ParameterExpression result = Expression.Parameter(typeof(int), "result");
+ 
+            LabelTarget label = Expression.Label(typeof(int));
+
+            var loop = Expression.Loop(
+                       Expression.IfThenElse(
+                       Expression.GreaterThan(parameter, Expression.Constant(1)),
+                       Expression.MultiplyAssign(result,
+                       Expression.PostDecrementAssign(parameter)),
+                       Expression.Break(label, result)
+                       ), label);
+
+            BlockExpression block = Expression.Block(
+                new[] { result },
+                Expression.Assign(result, Expression.Constant(1)), loop);
+
+            int factorial = Expression.Lambda<Func<int, int>>(block, parameter).Compile()(5);
+
+            Console.WriteLine(factorial);
+
+            Console.ReadKey();
+        }
+    }
