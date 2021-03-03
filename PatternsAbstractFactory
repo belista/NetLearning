@@ -1,0 +1,108 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            Hero elf = new Hero(new ElfFactory());
+            elf.Hit();
+            elf.Run();
+
+            Hero voin = new Hero(new VoinFactory());
+            voin.Hit();
+            voin.Run();
+
+            Console.ReadLine();
+        }
+    }
+
+    public interface IWeapon
+    {
+        void Hit();
+    }
+
+    public interface IMovement
+    {
+        void Move();
+    }
+
+    public class Arbalet : IWeapon
+    {
+        public void Hit()
+        {
+            Console.WriteLine("Shot with a crossbow");
+        }
+    }
+
+    public class Sword : IWeapon
+    {
+        public void Hit()
+        {
+            Console.WriteLine("Sword strike");
+        }
+    }
+
+    public class FlyMovement : IMovement
+    {
+        public void Move()
+        {
+            Console.WriteLine("Fly");
+        }
+    }
+
+    public class RunMovement : IMovement
+    {
+        public void Move()
+        {
+            Console.WriteLine("Run");
+        }
+    }
+
+    public interface IHeroFactory
+    {
+        IMovement CreateMovement();
+        IWeapon CreateWeapon();
+    }
+
+    public class ElfFactory : IHeroFactory
+    {
+        public IMovement CreateMovement()
+        {
+            return new FlyMovement();
+        }
+
+        public IWeapon CreateWeapon()
+        {
+            return new Arbalet();
+        }
+    }
+
+    public class VoinFactory : IHeroFactory
+    {
+        public IMovement CreateMovement()
+        {
+            return new RunMovement();
+        }
+
+        public IWeapon CreateWeapon()
+        {
+            return new Sword();
+        }
+    }
+
+    class Hero
+    {
+        private IWeapon weapon;
+        private IMovement movement;
+        public Hero(IHeroFactory factory)
+        {
+            weapon = factory.CreateWeapon();
+            movement = factory.CreateMovement();
+        }
+        public void Run()
+        {
+            movement.Move();
+        }
+        public void Hit()
+        {
+            weapon.Hit();
+        }
+    }
