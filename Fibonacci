@@ -1,0 +1,62 @@
+class Program
+    {
+        static void Main(string[] args)
+        {
+            var locker = new object();
+
+            var fibonnachiObj = new FibonnachiNumber(locker, 200);
+            fibonnachiObj.CalcValue();
+
+            var index = 0;
+
+            foreach (var item in fibonnachiObj.GetResult().OrderBy(e => e))
+            {
+                Console.WriteLine($"{index}: {item}");
+                index++;
+            }
+
+            Console.ReadKey();
+        }
+    }
+
+    public class FibonnachiNumber
+    {
+        public object Locker { get; set; }
+
+        public int Value { get; set; }
+
+        private List<double> _numbers { get; set; }
+
+        public FibonnachiNumber(object locker, int value)
+        {
+            Locker = locker;
+            Value = value;
+            _numbers = new List<double>();
+        }
+
+        public void CalcValue()
+        {
+            for (int i = 0; i <= Value; i++)
+            {
+                var thread = new Thread(new ParameterizedThreadStart(FibonnachiAlgoritm));
+                thread.Name = $"F{i}";
+                thread.Start(i);
+            }
+        }
+
+        public void FibonnachiAlgoritm(object obj)
+        {
+            var value = (int)obj;
+
+            lock(Locker)
+            {
+                var result = Math.Round((1 / Math.Sqrt(5)) * Math.Pow(((1 + Math.Sqrt(5)) / 2), value) - (1 / Math.Sqrt(5)) * Math.Pow(((1 - Math.Sqrt(5)) / 2), value));
+                _numbers.Add(result);
+            }
+        }
+
+        public List<double> GetResult()
+        {
+            return _numbers;
+        }
+    }
